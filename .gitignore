@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+*.log
+media/
+
+# Игнорировать node_modules во всех подпапках
+**/node_modules/
+
+# Дополнительные системные файлы (пример)
+.DS_Store
+*.log
+.env
