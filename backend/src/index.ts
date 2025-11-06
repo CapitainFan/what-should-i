@@ -1,26 +1,40 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import http from 'http';
+import connectDB from './config/db';
+import TokenRoutes from './routes/tokenRoutes'
+import userRoutes from './routes/userRoutes';
 
-const app = express();
+
+dotenv.config();
 const PORT = 8000;
 
-// Middleware
-app.use(cors());
+connectDB();
+
+const app = express();
+
+app.use(cors({
+  credentials: true,
+}))
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use('/media', express.static(path.join(__dirname, '../media')));
 
-// Test endpoint
-app.get('/api/hello', (req, res) => {
-  res.json({ 
-    message: 'Hello from Express backend!',
-    timestamp: new Date().toISOString()
-  });
+
+const server = http.createServer(app);
+
+
+app.get('/api', (req, res) => {
+  res.send('Добро пожаловать в Express + TypeScript API');
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK' });
-});
+app.use('/api/users', userRoutes);
+app.use('/api/tokens', TokenRoutes);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Backend running on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Сервер запущен на порту: ${PORT}`);
 });
