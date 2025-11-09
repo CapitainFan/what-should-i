@@ -5,7 +5,7 @@ import RefreshToken from '../models/refreshTokenModel';
 import mongoose from 'mongoose';
 
 
-const MAX_ACTIVE_SESSIONS = 5
+const MAX_ACTIVE_SESSIONS = 3
 
 
 export const generateTokens = async (userId: string) => {

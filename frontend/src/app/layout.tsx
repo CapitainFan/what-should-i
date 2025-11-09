@@ -1,3 +1,5 @@
+import './globals.css';
+
 export const metadata = {
   title: 'Next.js Frontend',
   description: 'Connected to Express backend',
