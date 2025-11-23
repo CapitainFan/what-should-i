@@ -16,12 +16,9 @@ connectDB();
 
 const app = express();
 
-const corsOptions = {
-  origin: 'http://localhost:3000',
+app.use(cors({
   credentials: true,
-  optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
