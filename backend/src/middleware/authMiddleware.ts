@@ -15,6 +15,7 @@ export const authenticate = asyncHandler(async (req: Request, res: Response, nex
 
   if (!token) {
     res.status(401);
+    console.log('Not authorized, no token.');
     throw new Error("Not authorized, no token.");
   }
 
@@ -22,12 +23,14 @@ export const authenticate = asyncHandler(async (req: Request, res: Response, nex
   
   if (expired) {
     res.status(401);
+    console.log('Access token expired. Please refresh your token.');
     throw new Error("Access token expired. Please refresh your token.");
   }
 
   if (!user) {
     res.status(401);
-    throw new Error("Not authorized, token failed.");
+    console.log("Not authorized, wrong token.");
+    throw new Error("Not authorized, wrong token.");
   }
 
   (req as any).user = user;

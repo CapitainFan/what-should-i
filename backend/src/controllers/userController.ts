@@ -32,18 +32,23 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({
     ...userResponse,
     accessToken,
-    refreshToken
+    accessTokenExpiresIn: 300,      // 5 minutes
   });
+  console.log(`route: /users/login; result: 200; user: ${user}`)
 });
 
 
 
 const logoutUser = asyncHandler(async (req: Request, res: Response) => {
-  const userId = (req as any).user._id;
+  const user = (req as any).user;
   const refreshToken = req.cookies?.refreshToken;
 
   if (refreshToken) {
     await removeRefreshToken(refreshToken);
+  } else {
+    res.status(500).json({ message: "Not logged out, no refreshToken"});
+    console.log(`route: /users/logout; result: 500; user: ${user}`)
+    return
   }
 
   res.cookie('refreshToken', '', {
@@ -52,6 +57,7 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   });
 
   res.status(200).json({ message: "Logged out successfully" });
+  console.log(`route: /users/logout; result: 200; user: ${user}`)
 });
 
 
@@ -71,8 +77,20 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const user = await User.create({ username, email, password});
+
+  const { accessToken, refreshToken } = await generateTokens(user._id.toString());
+
+  setRefreshTokenCookie(res, refreshToken);
+
+  const { password: _, ...userResponse } = user.toObject();
   
-  res.status(201).json(user);
+  res.status(201).json({
+    ...userResponse,
+    accessToken,
+    accessTokenExpiresIn: 300,      // 5 minutes
+  });
+
+  console.log(`route: /users/register; result: 200; user: ${user}; refreshToken: ${refreshToken}`)
 });
 
 
@@ -83,6 +101,7 @@ const getUsers = asyncHandler(async (req: Request, res: Response) => {
   const totalUsers = await User.countDocuments({});
 
   res.status(200).json({count: totalUsers, users});
+  console.log(`route: /users; result: 200`);
 });
 
 
@@ -90,6 +109,7 @@ const getUsers = asyncHandler(async (req: Request, res: Response) => {
 const getSpecificUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.params.userId, '-password -__v')
   res.status(200).json({user});
+  console.log(`route: /users/:userId; result: 200`);
 });
 
 

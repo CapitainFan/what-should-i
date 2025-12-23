@@ -5,7 +5,9 @@ import RefreshToken from '../models/refreshTokenModel';
 import mongoose from 'mongoose';
 
 
-const MAX_ACTIVE_SESSIONS = 5
+const MAX_ACTIVE_SESSIONS = 3
+const ACCESS_TOKEN_EXPIRES_IN = '15min'
+const REFRESH_TOKEN_EXPIRES_IN = '30d'
 
 
 export const generateTokens = async (userId: string) => {
@@ -18,7 +20,7 @@ export const generateTokens = async (userId: string) => {
       const oldestSessions = await RefreshToken.find({ userId })
         .sort({ createdAt: 1 })
         .limit(activeSessions - MAX_ACTIVE_SESSIONS + 1);
-      
+
       for (const session of oldestSessions) {
         await RefreshToken.deleteOne({ _id: session._id });
       }
@@ -27,13 +29,13 @@ export const generateTokens = async (userId: string) => {
     const accessToken = jwt.sign(
       { userId },
       process.env.ACCESS_TOKEN_SECRET!,
-      { expiresIn: "15m" }
+      { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
     );
 
     const refreshToken = jwt.sign(
       { userId },
       process.env.REFRESH_TOKEN_SECRET!,
-      { expiresIn: "30d" }
+      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     );
 
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -108,6 +110,16 @@ export const setRefreshTokenCookie = async (res: Response, refreshToken: string)
     maxAge: 30 * 24 * 60 * 60 * 1000 // 30 дней
   });
 };
+
+
+// export const setAccessTokenCookie = async (res: Response, accessToken: string) => {
+//   res.cookie('accessToken', accessToken, {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV !== 'development',
+//     sameSite: 'strict',
+//     maxAge: 15 * 60 * 1000 // 15 минут
+//   });
+// };
 
 
 
