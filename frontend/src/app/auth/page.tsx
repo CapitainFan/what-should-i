@@ -31,7 +31,7 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoginForm, setIsLoginForm] = useState(true);
 
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const router = useRouter();
 
   const handleAuthToggle = (isLogin: boolean) => {
@@ -53,28 +53,15 @@ export default function AuthPage() {
 
     try {
       
-      const response = await fetch('http://localhost:8000/api/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: registerUsername,
-          email: registerEmail,
-          password: registerPassword,
-        }),
+      await register({
+        username: registerUsername,
+        email: registerEmail,
+        password: registerPassword,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
-      }
-
       toast.success("Успешная регистрация");
-      setRegisterUsername('');
-      setRegisterEmail('');
-      setRegisterPassword('');
-      setRegisterConfirmPassword('');
+
+      router.push('/home');
       
     } catch (error: any) {
       const errorMessage = error.message || "Ошибка регистрации";

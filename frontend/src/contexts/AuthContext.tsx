@@ -1,12 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { AuthState, User, LoginCredentials } from '@/types/auth';
+import { AuthState, User, LoginCredentials, RegisterCredentials } from '@/types/auth';
 
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
   refreshAccessToken: () => Promise<string | null>;
 }
 
@@ -166,10 +167,52 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const register = async (credentials: RegisterCredentials): Promise<void> => {
+    console.log("register")
+    try {
+      const response = await fetch(`${API_URL}/api/users/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
+      }
+
+      const data = await response.json();
+
+      setAuthState({
+        user: {
+          _id: data._id,
+          username: data.username,
+          email: data.email,
+          profilePicture: data.profilePicture,
+          createdAt: data.createdAt,
+          __v: data.__v,
+        },
+        accessToken: data.accessToken,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+
+      console.log('User registered and authenticated successfully');
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  };
+
   const value = {
     ...authState,
     login,
     logout,
+    register,
     refreshAccessToken,
   };
 

@@ -35,3 +35,9 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+
+export interface RegisterCredentials {
+  username: string;
+  email: string;
+  password: string;
+}

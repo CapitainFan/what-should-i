@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAuthFetch } from '@/hooks/useAuthFetch';
 import ProtectedRoute from '@/components/ui/ProtectedRoute';
@@ -19,13 +19,16 @@ interface UsersResponse {
 }
 
 export default function HomePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading: AuthLoading } = useAuth();
   const authFetch = useAuthFetch();
   const [usersData, setUsersData] = useState<UsersResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
+    if (AuthLoading || hasFetchedRef.current) return;
+
     const fetchUserData = async () => {
       try {
         setLoading(true);
@@ -42,17 +45,24 @@ export default function HomePage() {
         console.error('Failed to fetch users data:', error);
       } finally {
         setLoading(false);
+        hasFetchedRef.current = true;
       }
     };
   
       fetchUserData();
-  }, []);
-  // }, [authFetch]);
+  }, [authFetch, AuthLoading]);
 
-  const handleLogout = async () => {
-    await logout();
-    window.location.href = '/';
-  };
+  if (AuthLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <ProtectedRoute>
@@ -181,35 +191,6 @@ export default function HomePage() {
                 No users found
               </div>
             )}
-          </div>
-
-          <div className="mt-6 bg-white p-4 rounded shadow">
-            <h3 className="text-lg font-bold mb-3">Session Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="mb-2">
-                  <span className="font-medium">Status:</span>{' '}
-                  <span className={`inline-flex items-center px-2 py-1 rounded text-sm ${
-                    user ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}>
-                    {user ? 'Authenticated' : 'Not authenticated'}
-                  </span>
-                </p>
-                <p className="mb-2">
-                  <span className="font-medium">Token storage:</span> React State (Memory)
-                </p>
-                <p>
-                  <span className="font-medium">Auto-refresh:</span> Enabled
-                </p>
-              </div>
-              <div className="bg-gray-50 p-3 rounded">
-                <p className="font-medium mb-1">Debug info:</p>
-                <p className="text-sm text-gray-600">
-                  Refresh token is stored in HTTP-only cookie.
-                  Access token is automatically refreshed on 401 errors.
-                </p>
-              </div>
-            </div>
           </div>
         </main>
           </div>
