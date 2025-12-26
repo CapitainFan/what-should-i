@@ -1,6 +1,7 @@
 import NavBar from '@/components/ui/NavBar';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
+import ReactToast from '@/components/ui/react-toast';
 
 export const metadata = {
   title: 'Next.js Frontend',
@@ -18,6 +19,7 @@ export default function RootLayout({
         <AuthProvider>
           <NavBar/>
           {children}
+          <ReactToast/>
         </AuthProvider>
       </body>
     </html>
