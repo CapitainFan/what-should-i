@@ -4,7 +4,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import ReactToast from '@/components/ui/react-toast';
 
 export const metadata = {
-  title: 'Next.js Frontend',
+  title: 'What Should I',
   description: 'Connected to Express backend',
 };
 

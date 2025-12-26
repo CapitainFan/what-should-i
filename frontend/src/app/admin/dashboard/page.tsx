@@ -18,7 +18,7 @@ interface UsersResponse {
   users: User[];
 }
 
-export default function HomePage() {
+export default function AdminPage() {
   const { user, logout, isLoading: AuthLoading } = useAuth();
   const authFetch = useAuthFetch();
   const [usersData, setUsersData] = useState<UsersResponse | null>(null);

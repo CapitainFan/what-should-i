@@ -1,8 +1,6 @@
 "use client"
 
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 
 export default function HomePage() {
@@ -10,7 +8,7 @@ export default function HomePage() {
 
   const handleBeginChatButton = async () => {
     if (isAuthenticated) {
-      window.location.href = '/home'
+      window.location.href = '/chats/new'
     } else {
       window.location.href = '/auth'
     }
@@ -22,7 +20,7 @@ export default function HomePage() {
         <br/><br/><br/>
         <h1 className='absolute ml-30 mt-20 text-[80px] font-bold'>Should I?</h1>
 
-        <div className='absolute ml-27 mt-61 w-150 h-30 bg-gray-200 rounded-4xl flex justify-center items-center'><h3 className='w-135 text-[15px]'>Приветсвуем в <strong>What Should I</strong> — ИИ-помощник для принятия решений. Неважно, планируете ли вы вечер, ищете новое хобби или решаете что приготовить — начните диалог, и <strong>Ви</strong> поможет выбрать лучший вариант.</h3></div>
+        <div className='absolute ml-27 mt-61 w-150 h-30 bg-gray-200 rounded-4xl flex justify-center items-center'><h3 className='w-135 text-[15px]'>Приветсвуем в <strong>What Should I</strong> — платформа с ИИ-помощником <strong>Ви</strong>  для принятия решений. Неважно, планируете ли вы вечер, ищете новое хобби или решаете что приготовить — начните диалог, и <strong>Ви</strong> поможет выбрать лучший вариант.</h3></div>
 
         <button className='absolute bg-blue-500 text-white ml-35 mt-110 rounded-3xl h-15 w-50 font-bold hover:bg-blue-700'
         onClick={handleBeginChatButton}>Начать чат с Ви</button>

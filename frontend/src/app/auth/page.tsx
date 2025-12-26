@@ -61,7 +61,7 @@ export default function AuthPage() {
 
       toast.success("Успешная регистрация");
 
-      router.push('/home');
+      router.push('/chats/new');
       
     } catch (error: any) {
       const errorMessage = error.message || "Ошибка регистрации";
@@ -81,7 +81,7 @@ export default function AuthPage() {
 
     try {
       await login({ email: loginEmail, password: loginPassword });
-      router.push('/home');
+      router.push('/chats/new');
     } catch (error: any) {
       const errorMessage = error.message || "Ошибка аутенфикации";
       toast.error(errorMessage);
