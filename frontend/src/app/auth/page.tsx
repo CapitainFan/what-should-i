@@ -92,10 +92,10 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex justify-center items-center bg-black w-full h-[calc(100vh-52px)]">
+    <div className="flex justify-center items-center w-full h-[calc(100vh-52px)]">
       <div className="flex justify-center space-x-20 max-w-4xl w-full">
         <form className="flex-1 max-w-md" onSubmit={handleLoginSubmit}>
-          <h2 className="text-white text-2xl font-bold mb-6 text-center">Вход</h2>
+          <h2 className=" text-2xl font-bold mb-6 text-center">Вход</h2>
           <div className="flex flex-col items-center space-y-5">
             <Input
               className="bg-white h-15 w-full rounded-lg text-center"
@@ -126,7 +126,7 @@ export default function AuthPage() {
         </form>
 
         <form className="flex-1 max-w-md" onSubmit={handleRegisterSubmit}>
-          <h2 className="text-white text-2xl font-bold mb-6 text-center">Регистрация</h2>
+          <h2 className=" text-2xl font-bold mb-6 text-center">Регистрация</h2>
           <div className="flex flex-col items-center space-y-5">
             <Input
               className="bg-white h-15 w-full rounded-lg text-center"

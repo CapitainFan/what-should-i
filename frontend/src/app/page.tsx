@@ -2,18 +2,34 @@
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 
 
 export default function HomePage() {
-  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+
+  const handleBeginChatButton = async () => {
+    if (isAuthenticated) {
+      window.location.href = '/home'
+    } else {
+      window.location.href = '/auth'
+    }
+  };
 
   return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-4 text-white">Добро пожаловать на главную страницу !</h1>
-        <p><Button className='bg-white text-black hover:bg-gray-300' onClick={() => router.push('/auth')}>Зарегистрироваться / Залогинится</Button></p>
-        <br/>
-        <p><Button className='bg-white text-black hover:bg-gray-300' onClick={() => router.push('/home')}>Домашняя страница</Button></p>
-        <br/>
+      <div className='bg-white h-[calc(100%-72px)]'>
+        <h1 className='absolute ml-30 mt-20 text-[80px] font-bold'>What</h1>
+        <br/><br/><br/>
+        <h1 className='absolute ml-30 mt-20 text-[80px] font-bold'>Should I?</h1>
+
+        <div className='absolute ml-27 mt-61 w-150 h-30 bg-gray-200 rounded-4xl flex justify-center items-center'><h3 className='w-135 text-[15px]'>Приветсвуем в <strong>What Should I</strong> — ИИ-помощник для принятия решений. Неважно, планируете ли вы вечер, ищете новое хобби или решаете что приготовить — начните диалог, и <strong>Ви</strong> поможет выбрать лучший вариант.</h3></div>
+
+        <button className='absolute bg-blue-500 text-white ml-35 mt-110 rounded-3xl h-15 w-50 font-bold hover:bg-blue-700'
+        onClick={handleBeginChatButton}>Начать чат с Ви</button>
+
+        <div className='flex justify-end items-center'>
+          <img src="main_page_pic.png" className='w-auto h-140 '></img>
+        </div>
       </div>
   );
 }

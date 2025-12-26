@@ -1,3 +1,4 @@
+import NavBar from '@/components/ui/NavBar';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
+          <NavBar/>
           {children}
         </AuthProvider>
       </body>
