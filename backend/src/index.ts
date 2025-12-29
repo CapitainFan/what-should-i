@@ -7,6 +7,7 @@ import http from 'http';
 import connectDB from './config/db';
 import TokenRoutes from './routes/tokenRoutes'
 import userRoutes from './routes/userRoutes';
+import chatRoutes from './routes/chatRoutes';
 
 
 dotenv.config();
@@ -37,6 +38,8 @@ app.get('/api', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/tokens', TokenRoutes);
+app.use('/api/chats', chatRoutes);
+
 
 server.listen(PORT, () => {
   console.log(`Сервер запущен на порту: ${PORT}`);
