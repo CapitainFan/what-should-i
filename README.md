@@ -1,19 +1,22 @@
 What Should I 
 
-is a pet project designed to help you what to cook using products you have and to choose what to wear according too weather.
+is a pet project designed to help you to chooes what would you do.
 
 
 Technologies
 
 Backend :
-  Node.JS - Epress with TS;
-  MondoDB, mongoose library;
-  JWT - access and refresh tokens;
-  Multer - file manage library;
-  N8N agents;
+  Node.JS - Epress with TS
+  MondoDB - mongoose library
+  JWT - access and refresh tokens
+  Multer - file manage library
+  WebSocket server
+  Redis
+  N8N agent
 
 Frontend :
-  Next with TS;
-  Tailwind CSS;
-  ShadcnUI;
-  Zustand (Axios);
+  Next with TS
+  Tailwind CSS
+  Axios
+  ShadcnUI
+  React-Toastify
