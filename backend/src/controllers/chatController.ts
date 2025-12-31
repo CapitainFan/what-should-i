@@ -4,6 +4,7 @@ import User from '../models/userModel';
 import Chat, {TypeChat} from '../models/chatModel';
 import Message  from "../models/messageModel";
 import { FlattenMaps } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 
 interface AuthenticatedRequest extends Request {
@@ -146,4 +147,48 @@ export const deleteChat = asyncHandler(async (req: Request, res: Response) => {
 
 
 export const beginNewChat = asyncHandler(async (req: Request, res: Response) => {
+    const user = (req as any).user;
+    if (!user) {
+        return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    try {
+        const { initialMessage, chatName } = req.body;
+        
+        const chat = await Chat.create({
+            userId: user._id,
+            name: chatName || (initialMessage ? initialMessage.substring(0, 50) : 'Новый чат'),
+            sessionId: uuidv4(),
+            userMessagesCount: 0,
+            isOver: false
+        });
+
+        let firstMessage = null;
+        if (initialMessage && initialMessage.trim() !== '') {
+            firstMessage = await Message.create({
+                chatId: chat._id,
+                text: initialMessage,
+                isUserMessage: true,
+                userId: user._id
+            });
+            
+            chat.userMessagesCount = 1;
+            await chat.save();
+        }
+
+        res.status(201).json({
+            chatId: chat._id,
+            sessionId: chat.sessionId,
+            name: chat.name,
+            createdAt: chat.createdAt,
+            firstMessage: firstMessage ? {
+                id: firstMessage._id,
+                text: firstMessage.text
+            } : null
+        });
+
+    } catch (error) {
+        console.error('Error creating chat:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });

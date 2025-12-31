@@ -8,6 +8,7 @@ import connectDB from './config/db';
 import TokenRoutes from './routes/tokenRoutes'
 import userRoutes from './routes/userRoutes';
 import chatRoutes from './routes/chatRoutes';
+import { setupWebSocketServer } from './sockets/socketServer';
 
 
 dotenv.config();
@@ -30,7 +31,7 @@ app.use('/media', express.static(path.join(__dirname, '../media')));
 
 
 const server = http.createServer(app);
-
+setupWebSocketServer(server)
 
 app.get('/api', (req, res) => {
   res.send('Добро пожаловать в Express + TypeScript API');
