@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import User from '../models/userModel';
 import Chat, {TypeChat} from '../models/chatModel';
 import Message  from "../models/messageModel";
-import { FlattenMaps } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -40,14 +39,12 @@ export const getAllChatsNames = asyncHandler(async (req: AuthenticatedRequest, r
         return res.status(401).json({ message: 'Not authorized' });
     };
 
-    const chats: FlattenMaps<TypeChat>[] = await Chat
+    const chats = await Chat
             .find({ userId: req.user?._id })
-            .select('name')
+            .select('_id name')
             .lean();
 
-    const chatNames: string[] = chats.map(chat => chat.name);
-
-    res.status(200).json({ names: chatNames });
+    res.status(200).json(chats);
 });
 
 

@@ -335,7 +335,12 @@ async function startMessageProcessingWorker() {
                     }
                 }
             } catch (error: unknown) {
-                console.error('Worker error:', error);
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                
+                if (!errorMessage.includes('Command timed out') && !errorMessage.includes('ioredis')) {
+                    console.error('Worker error:', error);
+                }
+
                 await new Promise(resolve => setTimeout(resolve, 5000));
             }
         }

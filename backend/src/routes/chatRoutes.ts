@@ -12,7 +12,7 @@ const router = express.Router();
 
 router
     .get('/messagesFromChat/:chatId', authenticate, getMessagesFromChat)
-    .get('/allChatsByUser/:userId', authenticate, getAllChatsNames)
+    .get('/allChatsNames', authenticate, getAllChatsNames)
     .post('/beginNewChat', authenticate, beginNewChat)
     .put('/changeChatName/:chatId', authenticate, changeChatName)
     .delete('/:chatId', authenticate, deleteChat);
