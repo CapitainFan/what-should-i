@@ -1,6 +1,6 @@
 'use client'
 
-import { TextareaHTMLAttributes, forwardRef, useRef } from 'react'
+import { TextareaHTMLAttributes, forwardRef, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 
 interface CustomTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -12,8 +12,9 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
   ({ 
     className, 
     minHeight = 64, 
-    maxHeight = 210, 
-    onInput, 
+    maxHeight = 210,
+    value = '',
+    onChange,
     ...props 
   }, ref) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -37,9 +38,7 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
       }
     }
 
-    const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
-      const textarea = e.currentTarget
-      
+    const updateTextareaHeight = (textarea: HTMLTextAreaElement) => {
       const previousScrollTop = textarea.scrollTop
       const cursorPosition = textarea.selectionStart
       
@@ -71,11 +70,23 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
       }
       
       textarea.setSelectionRange(cursorPosition, cursorPosition)
+    }
+
+    const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+      const textarea = e.currentTarget
+      updateTextareaHeight(textarea)
       
-      if (onInput) {
-        onInput(e)
+      if (onChange) {
+        onChange(e as React.ChangeEvent<HTMLTextAreaElement>)
       }
     }
+
+    // Обновляем высоту при изменении значения извне
+    useEffect(() => {
+      if (textareaRef.current) {
+        updateTextareaHeight(textareaRef.current)
+      }
+    }, [value, minHeight, maxHeight])
 
     return (
       <>
@@ -100,6 +111,8 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
             paddingBottom: '8px',
             backgroundColor: 'hsla(0,0%,50%,0.342)',
           }}
+          value={value}
+          onChange={onChange}
           onInput={handleInput}
           {...props}
         />

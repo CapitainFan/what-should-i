@@ -1,0 +1,177 @@
+{
+  "name": "What Should I",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "13cb2a60-1381-4923-8828-c1bf60a528a2",
+        "authentication": "jwtAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "13f011ca-7835-451b-8862-2fbdab9a0731",
+      "name": "Webhook",
+      "webhookId": "13cb2a60-1381-4923-8828-c1bf60a528a2",
+      "executeOnce": false,
+      "credentials": {
+        "jwtAuth": {
+          "id": "3qceGpon6UKM8GcD",
+          "name": "JWT Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Ты — агент по имени Ви, созданный для того, чтобы помогать людям выбирать, что делать, в соответствии с их желаниями. Являешься часть проект What Should I."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        480,
+        0
+      ],
+      "id": "397d0fd5-20ee-4c6a-9530-04e3bef6e9a3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10000
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        256
+      ],
+      "id": "a1489eca-1cec-43bf-8402-d99814f77d37",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n    \"chatInput\": \"{{ $json.body.message }}\",\n    \"sessionId\": \"{{ $json.body.sessionId }}\",\n    \"chatId\": \"{{ $json.body.chatId }}\"\n  }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "593401c0-b2df-490c-b479-7e83bdb59b0d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        896,
+        0
+      ],
+      "id": "2130a99a-5301-4c3e-80f9-c5d24b7631ad",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        448,
+        256
+      ],
+      "id": "d48e7860-e06b-4a01-bffd-c1186c18c577",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lvddCget0GC0hJtX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "ae18b651-62fc-400e-80cd-24f1ff25ed53",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f2ef6bf0d1283bd8d09465492194a87caec5964ba5071b661bc23f128047a1c"
+  },
+  "id": "50w9Q1ovamYdb2nG",
+  "tags": []
+}

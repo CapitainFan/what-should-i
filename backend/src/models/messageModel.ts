@@ -12,7 +12,7 @@ interface TypeMessage extends Document {
 
 const messageSchema = new Schema<TypeMessage>({
     chatId: { type: Schema.Types.ObjectId,  ref: 'Chat', required: true,},
-    text: { type: String, maxlength: 2000, default: null, required: true},
+    text: { type: String, maxlength: 50000, default: null, required: true},
     isUserMessage: { type: Boolean, required: true },
     userId : { type: Schema.Types.ObjectId, ref: "User", required: false},
     createdAt: { type: Date, default: Date.now, index: true},

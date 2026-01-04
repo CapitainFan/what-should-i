@@ -37,7 +37,7 @@ interface Chat {
 
 
 export default function NavBar() {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, refreshAccessToken } = useAuth();
   const authFetch = useAuthFetch();
   const pathname = usePathname();
 
@@ -85,6 +85,9 @@ export default function NavBar() {
 
       if (response.ok) {
         fetchChats()
+        if (pathname.startsWith(`/chats/${chatId}`)) {
+          window.location.href = '/chats/new';
+        }
       } else {
         setError('Failed to delete chat');
       }
@@ -201,7 +204,10 @@ export default function NavBar() {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={fetchChats}
+                            onClick={() => {
+                              refreshAccessToken()
+                              fetchChats() 
+                            }}
                           >
                             Retry
                           </Button>
@@ -232,7 +238,7 @@ export default function NavBar() {
                                       onChange={(e) => setNewChatName(e.target.value)}
                                       onKeyDown={(e) => handleKeyDown(e, chat._id)}
                                       onBlur={() => handleSaveEdit(chat._id)}
-                                      className="flex-1"
+                                      className="flex-1 focus-visible:ring-0 focus:outline-none"
                                       placeholder="Chat name"
                                     />
                                   </div>
@@ -279,7 +285,7 @@ export default function NavBar() {
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                          <AlertDialogCancel>Вернуться</AlertDialogCancel>
+                                          <AlertDialogCancel className='focus-visible:ring-0 focus:outline-none'>Вернуться</AlertDialogCancel>
                                           <AlertDialogAction onClick={() => handleChatDelete(chat._id)} className='bg-red-500 hover:bg-red-700 text-white'>Удалить</AlertDialogAction>
                                         </AlertDialogFooter>
                                       </AlertDialogContent>

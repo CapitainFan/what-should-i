@@ -31,6 +31,7 @@ interface ProcessedMessageResult {
     success: boolean;
     aiResponse?: string;
     error?: string;
+    chatId?: string;
 }
 
 type RedisStreamMessage = [string, string[]];
@@ -89,13 +90,15 @@ export function setupWebSocketServer(httpServer: http.Server) {
                         ws.send(JSON.stringify({
                             type: 'ai_message',
                             text: result.aiResponse,
-                            taskId: result.taskId
+                            taskId: result.taskId,
+                            chatId: result.chatId,
                         }));
                     } else if (result.error) {
                         ws.send(JSON.stringify({
                             type: 'error',
                             text: result.error,
-                            taskId: result.taskId
+                            taskId: result.taskId,
+                            chatId: result.chatId,
                         }));
                     }
                 }
@@ -314,6 +317,7 @@ async function startMessageProcessingWorker() {
                             taskId: task.taskId,
                             type: 'message_processed',
                             success: true,
+                            chatId: task.chatId,
                             aiResponse
                         };
 
@@ -328,6 +332,7 @@ async function startMessageProcessingWorker() {
                             taskId: task.taskId,
                             type: 'message_processed',
                             success: false,
+                            chatId: task.chatId,
                             error: errorMessage
                         };
 
@@ -375,6 +380,7 @@ async function sendToN8n(params: {
         })
     });
 
+    console.log(response)
     if (!response.ok) {
         throw new Error(`N8N request failed: ${response.statusText}`);
     }
