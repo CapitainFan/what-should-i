@@ -28,7 +28,7 @@ export default function HomePage() {
         onClick={handleBeginChatButton}>Начать чат с Ви</button>
 
         <div className='flex justify-end items-center'>
-          <Image alt='Изображение для главной страницы' src="/main_page_pic.png" width={560} height={560} className='w-auto h-140 '></Image>
+          <Image alt='Изображение для главной страницы' src="/main_page_pic.PNG" width={560} height={560} className='w-auto h-140 '></Image>
         </div>
       </div>
   );
