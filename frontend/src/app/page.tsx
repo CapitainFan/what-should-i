@@ -1,6 +1,8 @@
 "use client"
 
 import { useAuth } from '@/contexts/AuthContext';
+import Image from 'next/image';
+
 
 
 export default function HomePage() {
@@ -26,7 +28,7 @@ export default function HomePage() {
         onClick={handleBeginChatButton}>Начать чат с Ви</button>
 
         <div className='flex justify-end items-center'>
-          <img src="main_page_pic.png" className='w-auto h-140 '></img>
+          <Image alt='Изображение для главной страницы' src="/main_page_pic.png" width={560} height={560} className='w-auto h-140 '></Image>
         </div>
       </div>
   );
