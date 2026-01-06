@@ -2,11 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node src/index.js",
+    "start": "ts-node src/index.ts",
     "clean": "rm -rf src"
   },
   "keywords": [],
