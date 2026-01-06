@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.ts",
-    "clean": "rm -rf dist"
+    "start": "node src/index.ts",
+    "clean": "rm -rf src"
   },
   "keywords": [],
   "author": "",
