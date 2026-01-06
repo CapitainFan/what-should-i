@@ -66,7 +66,7 @@ export default function Chat() {
     }
 
     const socket = new WebSocket(
-      `ws://${process.env.NEXT_PUBLIC_API_URL_SHORT}/ws?token=${accessToken}`
+      `wss://${process.env.NEXT_PUBLIC_API_URL_SHORT}/ws?token=${accessToken}`
     );
 
     socket.onopen = () => {

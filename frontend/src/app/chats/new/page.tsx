@@ -29,7 +29,7 @@ export default function NewChat() {
     if (AuthLoading || !accessToken || wsRef.current) return;
 
     const socket = new WebSocket(
-      `ws://${process.env.NEXT_PUBLIC_API_URL_SHORT}/ws?token=${accessToken}`
+      `wss://${process.env.NEXT_PUBLIC_API_URL_SHORT}/ws?token=${accessToken}`
     );
 
     socket.onopen = () => {
