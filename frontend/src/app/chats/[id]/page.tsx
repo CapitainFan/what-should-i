@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAuthFetch } from '@/hooks/useAuthFetch';
 import { useParams } from 'next/navigation';
+import ProtectedRoute from "@/components/ui/ProtectedRoute";
 
 interface Message {
   _id: string;
@@ -254,38 +255,50 @@ export default function Chat() {
     return `${time} ${month} ${day}`;
   };
 
+  if (AuthLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="relative flex flex-col items-center bg-gray-200 w-250 h-[calc(100vh-152px)] rounded-3xl mt-10">
-        <div className="absolute inset-0 flex flex-col p-5 justify-center items-center">
-          <div className="flex-1 overflow-y-auto mb-4 pr-2 w-full">
+  <ProtectedRoute>
+    <div className="flex flex-col items-center justify-center w-full px-2 sm:px-4 lg:px-6 py-4 sm:py-6">
+      <div className="relative flex flex-col items-center bg-gray-200 w-full max-w-4xl h-[calc(100vh-200px)] sm:h-[calc(100vh-180px)] lg:h-[calc(100vh-160px)] rounded-xl sm:rounded-2xl lg:rounded-3xl mt-4 sm:mt-6 lg:mt-8 lg:mt-10">
+        <div className="absolute inset-0 flex flex-col p-3 sm:p-4 lg:p-5 justify-center items-center">
+          <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 pr-1 sm:pr-2 w-full">
             {loading && messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-gray-500">Загрузка сообщений...</div>
+                <div className="text-gray-500 text-sm sm:text-base">Загрузка сообщений...</div>
               </div>
             ) : error ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-red-500">{error}</div>
+                <div className="text-red-500 text-sm sm:text-base text-center px-4">{error}</div>
               </div>
             ) : messages.length > 0 || isBotTyping ? (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2 sm:gap-3">
                 {messages.map((message: Message) => (
                   <div
                     key={message._id}
                     className={`flex ${message.isUserMessage ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-2xl p-4 ${
+                      className={`max-w-[85%] sm:max-w-[80%] rounded-xl sm:rounded-2xl p-3 sm:p-4 ${
                         message.isUserMessage
-                          ? 'bg-[hsla(0,0%,50%,0.342)] rounded-tr-none'
-                          : 'bg-blue-500 text-white rounded-tl-none'
+                          ? 'bg-[hsla(0,0%,50%,0.342)] rounded-tr-none sm:rounded-tr-none'
+                          : 'bg-blue-500 text-white rounded-tl-none sm:rounded-tl-none'
                       } ${message.isTemporary ? 'opacity-70' : ''}`}
                     >
-                      <div className="text-sm whitespace-pre-wrap break-words">
+                      <div className="text-xs sm:text-sm whitespace-pre-wrap break-words">
                         {message.text}
                       </div>
                       <div
-                        className={`text-xs mt-2 ${
+                        className={`text-xs mt-1 sm:mt-2 ${
                           message.isUserMessage ? 'text-gray-600' : 'text-blue-100'
                         }`}
                       >
@@ -297,14 +310,14 @@ export default function Chat() {
                 
                 {isBotTyping && (
                   <div className="flex justify-start">
-                    <div className="max-w-[80%] rounded-2xl p-4 bg-blue-500 text-white rounded-tl-none">
+                    <div className="max-w-[85%] sm:max-w-[80%] rounded-xl sm:rounded-2xl p-3 sm:p-4 bg-blue-500 text-white rounded-tl-none sm:rounded-tl-none">
                       <div className="flex items-center gap-2">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                           <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                           <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                         </div>
-                        <span className="text-sm">Бот печатает...</span>
+                        <span className="text-xs sm:text-sm">Бот печатает...</span>
                       </div>
                     </div>
                   </div>
@@ -314,28 +327,31 @@ export default function Chat() {
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
-                <div className="text-gray-500">Нет сообщений</div>
+                <div className="text-gray-500 text-sm sm:text-base">Нет сообщений</div>
               </div>
             )}
           </div>
 
-          <CustomTextarea
-            placeholder="Введите запрос"
-            className="bottom-[15px]"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isSending || !isWsConnected}
-          />
-          <button
-            onClick={sendMessage}
-            disabled={!input.trim() || isSending || !isWsConnected}
-            className="absolute right-5 bottom-9 px-4 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isSending ? 'Отправка...' : 'Отправить'}
-          </button>
+          <div className="w-full relative">
+            <CustomTextarea
+              placeholder="Введите запрос"
+              className="w-full"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isSending || !isWsConnected}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!input.trim() || isSending || !isWsConnected}
+              className="absolute right-2 bottom-2 sm:right-3 sm:bottom-3 px-3 py-1 sm:px-4 sm:py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
+            >
+              {isSending ? 'Отправка...' : 'Отправить'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+  </ProtectedRoute>
   );
 }
