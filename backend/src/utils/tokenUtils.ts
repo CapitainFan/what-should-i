@@ -106,7 +106,7 @@ export const setRefreshTokenCookie = async (res: Response, refreshToken: string)
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 30 * 24 * 60 * 60 * 1000 // 30 дней
   });
 };
@@ -116,7 +116,7 @@ export const setRefreshTokenCookie = async (res: Response, refreshToken: string)
 //   res.cookie('accessToken', accessToken, {
 //     httpOnly: true,
 //     secure: process.env.NODE_ENV !== 'development',
-//     sameSite: 'strict',
+//     sameSite: 'none',
 //     maxAge: 15 * 60 * 1000 // 15 минут
 //   });
 // };
