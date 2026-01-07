@@ -258,7 +258,7 @@ export default function NavBar() {
 
                                     <Button 
                                       variant="outline"
-                                      className='bg-blue-500 hover:bg-blue-600 h-9 w-9 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+                                      className='bg-blue-500 hover:bg-blue-600 h-9 w-9 text-white rounded-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200'
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         handleStartEditing(chat);
@@ -269,13 +269,13 @@ export default function NavBar() {
                                     
                                     <AlertDialog>
                                       <AlertDialogTrigger asChild>
-                                        <Button variant="outline"
-                                          className='bg-red-500 hover:bg-red-600 h-9 w-9 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200'
-                                          onClick={(e) => e.stopPropagation()}
-                                        >
-                                          <IoTrashOutline />
-                                        </Button>
-                                      </AlertDialogTrigger>
+                                          <Button variant="outline"
+                                            className='bg-red-500 hover:bg-red-600 h-9 w-9 text-white rounded-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200'
+                                            onClick={(e) => e.stopPropagation()}
+                                          >
+                                            <IoTrashOutline />
+                                          </Button>
+                                        </AlertDialogTrigger>
 
                                       <AlertDialogContent className='bg-gray-200'>
                                         <AlertDialogHeader>
