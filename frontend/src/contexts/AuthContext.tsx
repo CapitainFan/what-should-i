@@ -36,7 +36,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [refreshPromise, setRefreshPromise] = useState<Promise<string | null> | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  // const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  const API_URL = '';
 
   useEffect(() => {
     const initAuth = async () => {
