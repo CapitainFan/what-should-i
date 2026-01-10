@@ -52,7 +52,6 @@ export default function AdminPage() {
     fetchUserData();
   }, [authFetch, AuthLoading]);
 
-  // Фильтруем пользователей с username
   const validUsers = usersData?.users?.filter(user => user?.username) || [];
 
   if (AuthLoading) {
@@ -92,7 +91,7 @@ export default function AdminPage() {
                 <div className="bg-white p-4 rounded shadow">
                   <h3 className="text-lg font-semibold mb-2">Total Users</h3>
                   <p className="text-3xl font-bold text-blue-600">
-                    {loading ? '...' : usersData?.count || 0}
+                    {loading ? '...' : validUsers.length || 0}
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow">
