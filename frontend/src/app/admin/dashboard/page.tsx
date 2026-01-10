@@ -30,27 +30,30 @@ export default function AdminPage() {
     if (AuthLoading || hasFetchedRef.current) return;
 
     const fetchUserData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await authFetch('/api/users');
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await authFetch('/api/users');
 
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Fetched data structure:', data);
-      console.log('First user:', data.users?.[0]);
-      
-      setUsersData(data);
-    } catch (error) {
-      console.error('Failed to fetch users data:', error);
-    } finally {
-      setLoading(false);
-      hasFetchedRef.current = true;
-    }
-  };
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Fetched data structure:', data);
+        console.log('First user:', data.users?.[0]);
+        
+        setUsersData(data);
+      } catch (error) {
+        console.error('Failed to fetch users data:', error);
+      } finally {
+        setLoading(false);
+        hasFetchedRef.current = true;
+      }
+    };
   
-      fetchUserData();
+    fetchUserData();
   }, [authFetch, AuthLoading]);
+
+  // Фильтруем пользователей с username
+  const validUsers = usersData?.users?.filter(user => user?.username) || [];
 
   if (AuthLoading) {
     return (
@@ -62,7 +65,6 @@ export default function AdminPage() {
       </div>
     );
   }
-
 
   return (
     <ProtectedRoute>
@@ -77,122 +79,121 @@ export default function AdminPage() {
           <div className="px-4 py-6 sm:px-0">
             <div className="bg-white shadow rounded-lg p-6">
               <h2 className="text-2xl font-bold mb-4">User Information</h2>
-                <div className="space-y-3">
-                  <p><strong>Username:</strong> {user?.username}</p>
-                  <p><strong>Email:</strong> {user?.email}</p>
-                  <p><strong>Account Created:</strong>{ user ? new Date(user?.createdAt).toLocaleDateString() : 'no data'}</p>
-                  <p><strong>User ID:</strong> {user?._id}</p>
+              <div className="space-y-3">
+                <p><strong>Username:</strong> {user?.username || 'No username'}</p>
+                <p><strong>Email:</strong> {user?.email || 'No email'}</p>
+                <p><strong>Account Created:</strong> {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'No data'}</p>
+                <p><strong>User ID:</strong> {user?._id || 'No ID'}</p>
+              </div>
+            </div>
+
+            <main className="max-w-7xl mx-auto px-4 py-6">
+              <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded shadow">
+                  <h3 className="text-lg font-semibold mb-2">Total Users</h3>
+                  <p className="text-3xl font-bold text-blue-600">
+                    {loading ? '...' : usersData?.count || 0}
+                  </p>
                 </div>
-
-            </div>
-
-        <main className="max-w-7xl mx-auto px-4 py-6">
-          <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold mb-2">Total Users</h3>
-              <p className="text-3xl font-bold text-blue-600">
-                {loading ? '...' : usersData?.count || 0}
-              </p>
-            </div>
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold mb-2">Current User</h3>
-              <p className="text-xl font-semibold text-gray-800 truncate">
-                {loading ? '...' : user?.username || 'N/A'}
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded shadow overflow-hidden">
-            <div className="px-6 py-4 border-b">
-              <h2 className="text-xl font-bold">Users List</h2>
-              {usersData && (
-                <p className="text-gray-600 text-sm mt-1">
-                  Showing {usersData.users.length} of {usersData.count} users
-                </p>
-              )}
-            </div>
-
-            {loading ? (
-              <div className="p-6">
-                <div className="animate-pulse space-y-3">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-10 bg-gray-200 rounded"></div>
-                  ))}
+                <div className="bg-white p-4 rounded shadow">
+                  <h3 className="text-lg font-semibold mb-2">Current User</h3>
+                  <p className="text-xl font-semibold text-gray-800 truncate">
+                    {loading ? '...' : user?.username || 'N/A'}
+                  </p>
                 </div>
               </div>
-            ) : error ? (
-              <div className="p-6 text-center text-red-600">
-                {error}
-              </div>
-            ) : usersData && usersData.users.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Username
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Created
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        ID
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {usersData.users.map((userItem) => (
-                      <tr 
-                        key={userItem._id}
-                        className={`hover:bg-gray-50 ${
-                          user && userItem._id === user._id ? 'bg-blue-50' : ''
-                        }`}
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                              <span className="font-medium text-gray-700">
-                                {userItem.username ? userItem.username.charAt(0).toUpperCase() : '?'}
-                              </span>
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900">
-                                {userItem.username}
-                                {user && userItem._id === user._id && (
-                                  <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                    You
+
+              <div className="bg-white rounded shadow overflow-hidden">
+                <div className="px-6 py-4 border-b">
+                  <h2 className="text-xl font-bold">Users List</h2>
+                  {usersData && (
+                    <p className="text-gray-600 text-sm mt-1">
+                      {validUsers.length} users
+                    </p>
+                  )}
+                </div>
+
+                {loading ? (
+                  <div className="p-6">
+                    <div className="animate-pulse space-y-3">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="h-10 bg-gray-200 rounded"></div>
+                      ))}
+                    </div>
+                  </div>
+                ) : error ? (
+                  <div className="p-6 text-center text-red-600">
+                    {error}
+                  </div>
+                ) : validUsers.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Username
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Email
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Created
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            ID
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {validUsers.map((userItem) => (
+                          <tr 
+                            key={userItem._id}
+                            className={`hover:bg-gray-50 ${
+                              user && userItem._id === user._id ? 'bg-blue-50' : ''
+                            }`}
+                          >
+                            <td className="px-6 py-4">
+                              <div className="flex items-center">
+                                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                  <span className="font-medium text-gray-700">
+                                    {userItem.username.charAt(0).toUpperCase()}
                                   </span>
-                                )}
+                                </div>
+                                <div>
+                                  <div className="font-medium text-gray-900">
+                                    {userItem.username}
+                                    {user && userItem._id === user._id && (
+                                      <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                        You
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          {userItem.email}
-                        </td>
-                        <td className="px-6 py-4 text-gray-600 text-sm">
-                          {(userItem.createdAt)}
-                        </td>
-                        <td className="px-6 py-4">
-                          <code className="text-xs bg-gray-100 px-2 py-1 rounded">
-                            {userItem._id.substring(0, 8)}...
-                          </code>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                            </td>
+                            <td className="px-6 py-4 text-gray-700">
+                              {userItem.email || 'No email'}
+                            </td>
+                            <td className="px-6 py-4 text-gray-600 text-sm">
+                              {userItem.createdAt ? new Date(userItem.createdAt).toLocaleDateString() : 'No date'}
+                            </td>
+                            <td className="px-6 py-4">
+                              <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                {userItem._id ? userItem._id.substring(0, 8) + '...' : 'No ID'}
+                              </code>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="p-6 text-center text-gray-500">
+                    No users found
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="p-6 text-center text-gray-500">
-                No users found
-              </div>
-            )}
-          </div>
-        </main>
+            </main>
           </div>
         </main>
       </div>
