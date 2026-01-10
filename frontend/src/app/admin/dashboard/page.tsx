@@ -30,24 +30,24 @@ export default function AdminPage() {
     if (AuthLoading || hasFetchedRef.current) return;
 
     const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await authFetch('/api/users');
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await authFetch('/api/users');
 
-        console.log(response)
-
-        if (response.ok) {
-          const data: UsersResponse = await response.json();
-          setUsersData(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch users data:', error);
-      } finally {
-        setLoading(false);
-        hasFetchedRef.current = true;
-      }
-    };
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Fetched data structure:', data);
+      console.log('First user:', data.users?.[0]);
+      
+      setUsersData(data);
+    } catch (error) {
+      console.error('Failed to fetch users data:', error);
+    } finally {
+      setLoading(false);
+      hasFetchedRef.current = true;
+    }
+  };
   
       fetchUserData();
   }, [authFetch, AuthLoading]);
@@ -155,7 +155,7 @@ export default function AdminPage() {
                           <div className="flex items-center">
                             <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
                               <span className="font-medium text-gray-700">
-                                {userItem.username.charAt(0).toUpperCase()}
+                                {userItem.username ? userItem.username.charAt(0).toUpperCase() : '?'}
                               </span>
                             </div>
                             <div>
