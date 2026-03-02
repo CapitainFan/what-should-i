@@ -1,9 +1,9 @@
-import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/userModel';
-import RefreshToken from '../models/refreshTokenModel';
 import mongoose from 'mongoose';
+import { Response } from 'express';
 
+import { User } from '@/modules/users/index';
+import { RefreshToken } from '@/modules/tokens/index';
 
 const MAX_ACTIVE_SESSIONS = 3
 const ACCESS_TOKEN_EXPIRES_IN = '15min'
@@ -112,17 +112,6 @@ export const setRefreshTokenCookie = async (res: Response, refreshToken: string)
 };
 
 
-// export const setAccessTokenCookie = async (res: Response, accessToken: string) => {
-//   res.cookie('accessToken', accessToken, {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV !== 'development',
-//     sameSite: 'lax',
-//     maxAge: 15 * 60 * 1000 // 15 минут
-//   });
-// };
-
-
-
 export const removeRefreshToken = async (token: string) => {
   await RefreshToken.deleteOne({ token });
 };
@@ -131,7 +120,6 @@ export const removeRefreshToken = async (token: string) => {
 export const findRefreshToken = async (token: string) => {
   return await RefreshToken.findOne({ token });
 };
-
 
 
 export const refreshTokens = async (res: Response, oldRefreshToken: string) => {

@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
+
 import asyncHandler from './asyncHandler';
-import { verifyAccessToken } from '../utils/tokenUtils';
-import User from '../models/userModel';
+import { verifyAccessToken } from '@/core/utils/tokenUtils';
+import { User } from '@/modules/users/index';
 
 
 export const authenticate = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

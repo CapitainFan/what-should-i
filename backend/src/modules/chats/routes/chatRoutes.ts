@@ -1,12 +1,16 @@
 import express from 'express';
-import { authenticate } from '../middleware/authMiddleware';
+
+import { authenticate } from '@/core/middleware/authMiddleware';
 import {
-    getMessagesFromChat,
     getAllChatsNames,
     beginNewChat,
     changeChatName,
     deleteChat,
 } from '../controllers/chatController';
+import {
+    getMessagesFromChat
+} from '../controllers/messageController';
+
 
 const router = express.Router();
 
@@ -16,7 +20,6 @@ router
     .post('/beginNewChat', authenticate, beginNewChat)
     .put('/changeChatName/:chatId', authenticate, changeChatName)
     .delete('/:chatId', authenticate, deleteChat);
-
 
 
 export default router;

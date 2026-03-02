@@ -14,7 +14,6 @@ interface TypeUser extends Document {
   matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
-
 const userSchema = new Schema<TypeUser>({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },

@@ -1,10 +1,11 @@
 import path from 'path';
-import { Request, Response } from 'express';
-import asyncHandler from '../middleware/asyncHandler';
-import User, { TypeUser } from '../models/userModel';
-import {generateTokens, removeRefreshToken, setRefreshTokenCookie} from '../utils/tokenUtils';
 import mongoose, { Types } from 'mongoose';
-import { uploadFile, generateFileName, deleteFileFromSubdir } from '../services/s3Service';
+import { Request, Response } from 'express';
+
+import asyncHandler from '@/core/middleware/asyncHandler';
+import { generateTokens, removeRefreshToken, setRefreshTokenCookie } from '@/core/utils/tokenUtils';
+import { uploadFile, generateFileName, deleteFileFromSubdir } from '@/core/utils/mediaUtils';
+import User, { TypeUser } from '../models/userModel';
 
 
 interface AuthenticatedRequest extends Request {
@@ -95,7 +96,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
 
 
-
 const getUsers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.find({}, '-password -__v').lean();
   const totalUsers = await User.countDocuments({});
@@ -136,7 +136,6 @@ const deleteUser = asyncHandler(async (req: AuthenticatedRequest, res: Response)
     session.endSession();
   }
 })
-
 
 
 
@@ -188,7 +187,6 @@ const updateUser = asyncHandler(async (req: AuthenticatedRequest, res: Response)
     message: `user ${user._id} is updated`
   });
 })
-
 
 
 export {

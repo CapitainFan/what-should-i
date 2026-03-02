@@ -1,7 +1,7 @@
-import { refreshTokens } from '../utils/tokenUtils';
-import asyncHandler from '../middleware/asyncHandler';
+import asyncHandler from '@/core/middleware/asyncHandler';
+import { refreshTokens } from '@/core/utils/tokenUtils';
 import { Request, Response } from 'express';
-import User from '../models/userModel';
+import { User } from '@/modules/users/index';
 
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {

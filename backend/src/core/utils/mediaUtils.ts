@@ -18,11 +18,6 @@ const ensureDirExists = async (dirPath: string) => {
   }
 };
 
-// (async () => {
-//   await ensureDirExists(path.join(MEDIA_ROOT, UPLOADS_DIR));
-//   await ensureDirExists(path.join(MEDIA_ROOT, THUMBNAILS_DIR));
-// })();
-
 export const generateFileName = (bytes = 32) => 
   crypto.randomBytes(bytes).toString('hex');
 

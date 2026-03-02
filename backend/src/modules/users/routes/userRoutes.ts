@@ -1,4 +1,7 @@
 import { Router } from 'express';
+
+import { upload } from '@/core/middleware/uploadMiddleware';
+import { authenticate } from '@/core/middleware/authMiddleware'
 import {
   registerUser,
   getUsers,
@@ -8,8 +11,6 @@ import {
   deleteUser,
   getSpecificUser,
 } from '../controllers/userController';
-import { upload } from '../middleware/uploadMiddleware';
-import { authenticate } from '../middleware/authMiddleware'
 
 
 const router = Router();

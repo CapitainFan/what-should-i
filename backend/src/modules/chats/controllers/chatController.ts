@@ -1,9 +1,9 @@
-import asyncHandler from '../middleware/asyncHandler';
 import { Request, Response } from 'express';
-import User from '../models/userModel';
-import Chat, {TypeChat} from '../models/chatModel';
-import Message  from "../models/messageModel";
 import { v4 as uuidv4 } from 'uuid';
+
+import asyncHandler from '@/core/middleware/asyncHandler';
+import Chat from '../models/chatModel';
+import Message  from "../models/messageModel";
 
 
 interface AuthenticatedRequest extends Request {
@@ -11,26 +11,6 @@ interface AuthenticatedRequest extends Request {
         _id: string;
     };
 }
-
-
-export const getMessagesFromChat = asyncHandler(async (req: Request, res: Response) => {
-    const user = (req as any).user;
-    if (!user) {
-        return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    const { chatId } = req.params;
-
-    const chat = await Chat.findById(chatId);
-    if (!chat) {
-        return res.status(404).json({ message: 'Chat with this does not exist' });
-    };
-
-    const messages = await Message.find({chatId: chatId});
-
-    return res.status(200).json({messages});
-});
-
 
 
 export const getAllChatsNames = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
@@ -46,7 +26,6 @@ export const getAllChatsNames = asyncHandler(async (req: AuthenticatedRequest, r
 
     res.status(200).json(chats);
 });
-
 
 
 export const changeChatName = asyncHandler(async (req: Request, res: Response) => {
@@ -99,7 +78,6 @@ export const changeChatName = asyncHandler(async (req: Request, res: Response) =
         });
     }
 });
-
 
 
 export const deleteChat = asyncHandler(async (req: Request, res: Response) => {

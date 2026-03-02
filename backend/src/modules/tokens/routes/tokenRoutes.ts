@@ -1,6 +1,7 @@
 import express from 'express';
+
+import { authenticate } from '@/core/middleware/authMiddleware'
 import { refreshAccessToken, verifyToken } from "../controllers/tokenController"
-import { authenticate } from '../middleware/authMiddleware'
 
 const router = express.Router();
 
