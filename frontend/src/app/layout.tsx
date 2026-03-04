@@ -1,7 +1,7 @@
-import NavBar from '@/components/ui/NavBar';
 import './globals.css';
-import { AuthProvider } from '@/contexts/AuthContext';
-import ReactToast from '@/components/ui/react-toast';
+import { Providers } from './providers/index'
+import { Navbar } from '@/widgets/navbar/index';
+
 
 export const metadata = {
   title: 'What Should I',
@@ -16,11 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          <NavBar/>
+        <Providers>
+          <Navbar/>
           {children}
-          <ReactToast/>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
