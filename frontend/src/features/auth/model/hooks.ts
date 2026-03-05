@@ -3,7 +3,7 @@
 import { useContext, useCallback } from 'react';
 
 import { AuthContext } from './context'
-import { BACK_API_URL, FRONT_URL } from '@/shared/config/api'
+import { FRONT_URL, BACK_API_URL } from '@/shared/config/api'
 
 
 export const useAuth = () => {
@@ -22,10 +22,11 @@ export const useAuthFetch = () => {
     url: string,
     options: RequestInit = {}
   ): Promise<Response> => {
-    const fullUrl = BACK_API_URL
+    const API_URL = BACK_API_URL;
+    const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
     
     let token = accessToken;
-  
+    
     const makeRequest = async (currentToken: string | null) => {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
