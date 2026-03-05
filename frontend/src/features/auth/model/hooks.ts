@@ -3,6 +3,7 @@
 import { useContext, useCallback } from 'react';
 
 import { AuthContext } from './context'
+import { BACK_API_URL, FRONT_URL } from '@/shared/config/api'
 
 
 export const useAuth = () => {
@@ -21,11 +22,10 @@ export const useAuthFetch = () => {
     url: string,
     options: RequestInit = {}
   ): Promise<Response> => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+    const fullUrl = BACK_API_URL
     
     let token = accessToken;
-    
+  
     const makeRequest = async (currentToken: string | null) => {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',

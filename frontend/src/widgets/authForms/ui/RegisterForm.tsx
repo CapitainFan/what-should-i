@@ -69,8 +69,8 @@ export const RegisterForm = () => {
         className="bg-white border-blue-500 h-[44px] rounded-2xl"
       />
       <div className="flex items-center space-x-2 mt-4">
-        <CheckboxAuth onCheck={() => console.log('checked')} />
-        <label className="text-sm">I agree to terms</label>
+        <CheckboxAuth onCheck={() => {}} />
+        <label className="text-sm">use social networks</label>
       </div>
       <Button
         type="submit"

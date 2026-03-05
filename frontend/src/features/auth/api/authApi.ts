@@ -1,6 +1,6 @@
 import { LoginCredentials, RegisterCredentials } from '../model/types';
 import { User } from '@/entities/user/model/types'
-import { API_URL } from '@/shared/config/api'
+import { BACK_API_URL } from '@/shared/config/api'
 
 interface LoginResponse {
   _id: string;
@@ -13,7 +13,7 @@ interface LoginResponse {
 }
 
 export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
-  const response = await fetch(`${API_URL}/api/users/login`, {
+  const response = await fetch(`${BACK_API_URL}/api/users/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -29,7 +29,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
 };
 
 export const registerUser = async (credentials: RegisterCredentials): Promise<LoginResponse> => {
-  const response = await fetch(`${API_URL}/api/users/register`, {
+  const response = await fetch(`${BACK_API_URL}/api/users/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -45,7 +45,7 @@ export const registerUser = async (credentials: RegisterCredentials): Promise<Lo
 };
 
 export const logoutUser = async (accessToken: string): Promise<void> => {
-  const response = await fetch(`${API_URL}/api/users/logout`, {
+  const response = await fetch(`${BACK_API_URL}/api/users/logout`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export const logoutUser = async (accessToken: string): Promise<void> => {
 };
 
 export const refreshToken = async (): Promise<{ user: User; accessToken: string } | null> => {
-  const response = await fetch(`${API_URL}/api/tokens/refreshToken`, {
+  const response = await fetch(`${BACK_API_URL}/api/tokens/refreshToken`, {
     method: 'POST',
     credentials: 'include',
   });
