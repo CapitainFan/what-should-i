@@ -73,7 +73,8 @@ export async function startMessageProcessingWorker() {
               type: 'message_processed',
               success: true,
               chatId: task.chatId,
-              aiResponse
+              aiResponse,
+              socketId: task.socketId,
             };
 
             await pubClient.publish('message:processed', JSON.stringify(processResult));
@@ -88,7 +89,8 @@ export async function startMessageProcessingWorker() {
               type: 'message_processed',
               success: false,
               chatId: task.chatId,
-              error: errorMessage
+              error: errorMessage,
+              socketId: task.socketId,
             };
 
             await pubClient.publish('message:processed', JSON.stringify(errorResult));

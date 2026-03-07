@@ -4,7 +4,7 @@ export interface StreamMessageTask {
   userId: string;
   chatId: string;
   messageText: string;
-  socketId?: string;
+  socketId: string;
   createdAt: string;
   sessionId: string;
 }
@@ -16,4 +16,5 @@ export interface ProcessedMessageResult {
   aiResponse?: string;
   error?: string;
   chatId?: string;
+  socketId: string;
 }

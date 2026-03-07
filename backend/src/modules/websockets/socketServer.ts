@@ -60,7 +60,7 @@ export function setupWebSocketServer(httpServer: http.Server) {
     try {
       if (channel === 'message:processed') {
         const result: ProcessedMessageResult = JSON.parse(message);
-        notifyClient(result.taskId, {
+        notifyClient(result.socketId, {
           type: result.success ? 'ai_message' : 'error',
           text: result.success ? result.aiResponse : result.error,
           taskId: result.taskId,
