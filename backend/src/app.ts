@@ -4,9 +4,9 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 
-import { tokenRouter } from '@/modules/tokens/index';
-import { userRouter } from '@/modules/users/index';
-import { chatRouter } from '@/modules/chats/index';
+import tokenRouter from '@/modules/tokens/routes/tokenRoutes';
+import userRouter from '@/modules/users/routes/userRoutes';
+import chatRouter from '@/modules/chats/routes/chatRoutes';
 
 dotenv.config();
 
