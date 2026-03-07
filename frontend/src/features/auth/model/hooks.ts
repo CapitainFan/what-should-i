@@ -1,19 +1,8 @@
 'use client';
 
-import { useContext, useCallback } from 'react';
-
-import { AuthContext } from './context'
-import { FRONT_URL, BACK_API_URL } from '@/shared/config/api'
-
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
+import { useCallback } from 'react';
+import { useAuth } from './context';
+import { BACK_API_URL } from '@/shared/config/api';
 
 export const useAuthFetch = () => {
   const { accessToken, refreshAccessToken } = useAuth();
@@ -22,8 +11,7 @@ export const useAuthFetch = () => {
     url: string,
     options: RequestInit = {}
   ): Promise<Response> => {
-    const API_URL = BACK_API_URL;
-    const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${BACK_API_URL}${url}`;
     
     let token = accessToken;
     
@@ -45,7 +33,6 @@ export const useAuthFetch = () => {
 
     if (response.status === 401 && !url.includes('/refreshToken')) {
       const newToken = await refreshAccessToken();
-      
       if (newToken) {
         response = await makeRequest(newToken);
       } else {

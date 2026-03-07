@@ -1,20 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, ReactNode } from 'react';
-import {
-    AuthContext,
-    AuthContextValue,
-    AuthState,
-    LoginCredentials,
-    RegisterCredentials,
-    loginUser,
-    registerUser,
-    logoutUser,
-    refreshToken
-} from '@/features/auth/index';
+import React, { useState, useEffect, useCallback } from 'react';
+import { AuthState, LoginCredentials, RegisterCredentials, AuthContext, authApi } from '@/features/auth/index';
 
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     accessToken: null,
@@ -29,7 +18,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = async () => {
       try {
         await refreshAccessToken();
-      } catch {
+      } catch (error) {
+        console.log('Не удалось восстановить сессию:', error);
         setAuthState(prev => ({ ...prev, isLoading: false }));
       }
     };
@@ -37,14 +27,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const refreshAccessToken = useCallback(async (): Promise<string | null> => {
-    if (isRefreshing && refreshPromise) return refreshPromise;
+    if (isRefreshing && refreshPromise) {
+      return refreshPromise;
+    }
 
     setIsRefreshing(true);
     const promise = (async () => {
       try {
-        const data = await refreshToken();
-        if (!data) throw new Error('Refresh failed');
-
+        const data = await authApi.refreshToken();
         setAuthState({
           user: data.user,
           accessToken: data.accessToken,
@@ -52,7 +42,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           isLoading: false,
         });
         return data.accessToken;
-      } catch {
+      } catch (error) {
+        console.error('Token refresh failed:', error);
         setAuthState({
           user: null,
           accessToken: null,
@@ -73,54 +64,67 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [isRefreshing, refreshPromise]);
 
   const login = async (credentials: LoginCredentials) => {
-    const data = await loginUser(credentials);
-    setAuthState({
-      user: {
-        _id: data._id,
-        username: data.username,
-        email: data.email,
-        profilePicture: data.profilePicture ?? null,
-        createdAt: data.createdAt,
-      },
-      accessToken: data.accessToken,
-      isAuthenticated: true,
-      isLoading: false,
-    });
-  };
-
-  const register = async (credentials: RegisterCredentials) => {
-    const data = await registerUser(credentials);
-    setAuthState({
-      user: {
-        _id: data._id,
-        username: data.username,
-        email: data.email,
-        profilePicture: data.profilePicture ?? null,
-        createdAt: data.createdAt,
-      },
-      accessToken: data.accessToken,
-      isAuthenticated: true,
-      isLoading: false,
-    });
+    try {
+      const data = await authApi.login(credentials);
+      setAuthState({
+        user: {
+          _id: data._id,
+          username: data.username,
+          email: data.email,
+          profilePicture: data.profilePicture,
+          createdAt: data.createdAt,
+          __v: data.__v,
+        },
+        accessToken: data.accessToken,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
 
   const logout = async () => {
-    if (authState.accessToken) {
-      try {
-        await logoutUser(authState.accessToken);
-      } catch (error) {
-        console.error('Logout error:', error);
+    try {
+      if (authState.accessToken) {
+        await authApi.logout(authState.accessToken);
       }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setAuthState({
+        user: null,
+        accessToken: null,
+        isAuthenticated: false,
+        isLoading: false,
+      });
     }
-    setAuthState({
-      user: null,
-      accessToken: null,
-      isAuthenticated: false,
-      isLoading: false,
-    });
   };
 
-  const value: AuthContextValue = {
+  const register = async (credentials: RegisterCredentials) => {
+    try {
+      const data = await authApi.register(credentials);
+      setAuthState({
+        user: {
+          _id: data._id,
+          username: data.username,
+          email: data.email,
+          profilePicture: data.profilePicture,
+          createdAt: data.createdAt,
+          __v: data.__v,
+        },
+        accessToken: data.accessToken,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  };
+
+  const value = {
     ...authState,
     login,
     logout,
@@ -128,5 +132,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     refreshAccessToken,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
