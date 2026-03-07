@@ -21,33 +21,44 @@ export const useChatWebSocket = ({
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
 
+  const onMessageReceivedRef = useRef(onMessageReceived);
+  const onAiMessageRef = useRef(onAiMessage);
+  const onErrorRef = useRef(onError);
+  const onChatCreatedRef = useRef(onChatCreated);
+
+  useEffect(() => {
+    onMessageReceivedRef.current = onMessageReceived;
+    onAiMessageRef.current = onAiMessage;
+    onErrorRef.current = onError;
+    onChatCreatedRef.current = onChatCreated;
+  }, [onMessageReceived, onAiMessage, onError, onChatCreated]);
+
   useEffect(() => {
     if (!accessToken) return;
 
     const socket = createWebSocket(accessToken);
+    wsRef.current = socket;
 
     socket.onopen = () => {
       console.log('WebSocket connected', chatId ? `for chat ${chatId}` : '');
       setIsConnected(true);
     };
 
-    socket.onmessage = (event: any) => {
+    socket.onmessage = (event) => {
       try {
         const data: WebSocketMessage = JSON.parse(event.data);
-        console.log('WebSocket message:', data);
-
         switch (data.type) {
           case 'message_received':
-            onMessageReceived?.(data.messageId, data.taskId);
+            onMessageReceivedRef.current?.(data.messageId, data.taskId);
             break;
           case 'ai_message':
-            onAiMessage?.(data.text, data.taskId, data.chatId);
+            onAiMessageRef.current?.(data.text, data.taskId, data.chatId);
             break;
           case 'error':
-            onError?.(data.text);
+            onErrorRef.current?.(data.text);
             break;
           case 'chat_created':
-            onChatCreated?.(data.chatId);
+            onChatCreatedRef.current?.(data.chatId);
             break;
         }
       } catch (err) {
@@ -55,35 +66,30 @@ export const useChatWebSocket = ({
       }
     };
 
-    socket.onerror = (error: any) => {
+    socket.onerror = (error) => {
       console.error('WebSocket error:', error);
-      onError?.('WebSocket connection error');
+      onErrorRef.current?.('WebSocket connection error');
       setIsConnected(false);
     };
 
-    socket.onclose = (event: any) => {
+    socket.onclose = (event) => {
       console.log(`WebSocket closed: ${event.code} ${event.reason}`);
       setIsConnected(false);
     };
 
-    wsRef.current = socket;
-
     return () => {
       socket.close(1000, 'Component unmounting');
     };
-  }, [accessToken, chatId, onMessageReceived, onAiMessage, onError, onChatCreated]);
+  }, [accessToken, chatId]);
 
-  const sendMessage = useCallback(
-    (text: string) => {
-      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-        console.error('WebSocket not connected');
-        return false;
-      }
-      wsRef.current.send(JSON.stringify({ text, chatId }));
-      return true;
-    },
-    [chatId]
-  );
+  const sendMessage = useCallback((text: string) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error('WebSocket not connected');
+      return false;
+    }
+    wsRef.current.send(JSON.stringify({ text, chatId }));
+    return true;
+  }, [chatId]);
 
   return { isConnected, sendMessage };
 };
