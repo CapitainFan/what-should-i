@@ -11,7 +11,7 @@ interface CustomTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement
 export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProps>(
   ({ 
     className, 
-    minHeight = 64, 
+    minHeight = 88,
     maxHeight = 210,
     value = '',
     onChange,
@@ -107,7 +107,7 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
             fontFamily: 'inherit',
             fontSize: 'inherit',
             paddingTop: '8px',
-            paddingBottom: '8px',
+            paddingBottom: '48px',
             backgroundColor: 'hsla(0,0%,50%,0.342)',
           }}
           value={value}
