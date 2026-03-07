@@ -21,12 +21,14 @@ https://what-should-i-six.vercel.app/
 
 ## Технологии
 ### Бэкэнд
+- **Модульная архитектура**
 - **Epresss Node JS 5.1.0 + TS**
 - **JWT + MongoDB**
-- **Web Sockets + Redis as Message Broker**
-- **N8N agent as AI**
+- **Websockets + Redis (as message broker)**
+- **n8n agent as AI**
 
 ### Фронтенд
+- **Feature-Sliced Design архитектура**
 - **Next.js 15.3**
 - **TypeScript, React 18+**
 - **Tailwind CSS v4 + Shadcn UI**
