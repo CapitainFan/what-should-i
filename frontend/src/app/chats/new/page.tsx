@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback} from 'react';
 import { useAuth } from '@/features/auth/index';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/shared/ui/ProtectedRoute';
@@ -16,9 +16,9 @@ export default function NewChatPage() {
   const [error, setError] = useState<string | null>(null);
   const [tempMessage, setTempMessage] = useState<string | null>(null);
 
-  const handleChatCreated = (chatId: string) => {
-    router.replace(`/chats/${chatId}`);
-  };
+  const handleChatCreated = useCallback((chatId: string) => {
+  router.replace(`/chats/${chatId}`);
+  }, [router]);
 
   const { isConnected, sendMessage } = useChatWebSocket({
     accessToken,

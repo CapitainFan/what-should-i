@@ -45,13 +45,23 @@ export const authApi = {
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
-    const res = await fetch(`${BACK_API_URL}/api/tokens/refreshToken`, {
-      method: 'POST',
-      credentials: 'include',
-    });
-    if (!res.ok) {
-      throw new Error('Failed to refresh token');
-    }
-    return res.json();
-  },
+  console.log('🔄 Attempting to refresh token');
+  console.log('Document cookies:', document.cookie); // покажет не httpOnly куки
+
+  const res = await fetch(`${BACK_API_URL}/api/tokens/refreshToken`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+
+  console.log('📡 Refresh response status:', res.status);
+  const resClone = res.clone();
+  const text = await resClone.text();
+  console.log('📦 Refresh response body:', text);
+
+  if (!res.ok) {
+    throw new Error('Failed to refresh token');
+  }
+  return res.json();
+  }
+
 };
