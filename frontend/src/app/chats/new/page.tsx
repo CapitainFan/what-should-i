@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback} from 'react';
+import { useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/index';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/shared/ui/ProtectedRoute';
 import { TypingIndicator, MessageItem, useChatWebSocket, MessageInput } from '@/features/chat/index';
-
 
 export default function NewChatPage() {
   const { user, isLoading: authLoading, accessToken } = useAuth();
@@ -15,15 +14,35 @@ export default function NewChatPage() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tempMessage, setTempMessage] = useState<string | null>(null);
+  const [pendingChatId, setPendingChatId] = useState<string | null>(null);
+
 
   const handleChatCreated = useCallback((chatId: string) => {
-  router.replace(`/chats/${chatId}`);
-  }, [router]);
+    setPendingChatId(chatId);
+  }, []);
+
+  const handleAiMessage = useCallback(
+    (text: string, taskId?: string, chatId?: string) => {
+      if (chatId) {
+        router.replace(`/chats/${chatId}`);
+      } else {
+        setError('Chat ID not found, please try again.');
+        setIsSending(false);
+      }
+    },
+    [router]
+  );
+
+  const handleError = useCallback((errorText: string) => {
+    setError(errorText);
+    setIsSending(false);
+  }, []);
 
   const { isConnected, sendMessage } = useChatWebSocket({
     accessToken,
     onChatCreated: handleChatCreated,
-    onError: setError,
+    onAiMessage: handleAiMessage,
+    onError: handleError,
   });
 
   const handleSendMessage = () => {
